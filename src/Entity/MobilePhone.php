@@ -2,26 +2,36 @@
 
 namespace App\Entity;
 
-use App\Repository\ProductRepository;
+use App\Repository\MobilePhoneRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: ProductRepository::class)]
-class Product
+#[ORM\Entity(repositoryClass: MobilePhoneRepository::class)]
+class MobilePhone
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['products:index', 'product:detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['products:index', 'product:detail'])]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(['products:index', 'product:detail'])]
     private ?int $price = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('product:detail')]
     private ?string $description = null;
+
+    #[ORM\ManyToOne(inversedBy: 'mobilePhones')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups('product:detail')]
+    private ?Brand $brand = null;
 
     public function getId(): ?int
     {
@@ -60,6 +70,18 @@ class Product
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getBrand(): ?Brand
+    {
+        return $this->brand;
+    }
+
+    public function setBrand(?Brand $brand): static
+    {
+        $this->brand = $brand;
 
         return $this;
     }

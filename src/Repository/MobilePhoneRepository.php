@@ -2,27 +2,27 @@
 
 namespace App\Repository;
 
-use App\Entity\Product;
+use App\Entity\MobilePhone;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Product>
+ * @extends ServiceEntityRepository<MobilePhone>
  *
- * @method Product|null find($id, $lockMode = null, $lockVersion = null)
- * @method Product|null findOneBy(array $criteria, array $orderBy = null)
- * @method Product[]    findAll()
- * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method MobilePhone|null find($id, $lockMode = null, $lockVersion = null)
+ * @method MobilePhone|null findOneBy(array $criteria, array $orderBy = null)
+ * @method MobilePhone[]    findAll()
+ * @method MobilePhone[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProductRepository extends ServiceEntityRepository
+class MobilePhoneRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Product::class);
+        parent::__construct($registry, MobilePhone::class);
     }
 
 //    /**
-//     * @return Product[] Returns an array of Product objects
+//     * @return MobilePhone[] Returns an array of MobilePhone objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -36,7 +36,7 @@ class ProductRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Product
+//    public function findOneBySomeField($value): ?MobilePhone
 //    {
 //        return $this->createQueryBuilder('p')
 //            ->andWhere('p.exampleField = :val')
