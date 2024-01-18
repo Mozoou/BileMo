@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api')]
 class MobilePhoneController extends AbstractController
 {
-    #[Route('/mobilephones', name: 'api_mobile_phones')]
+    #[Route('/mobilephones', name: 'api_mobile_phones', methods:['GET'])]
     public function mobilePhoneAll(MobilePhoneRepository $mobilePhoneRepository): JsonResponse
     {
         return $this->json(
@@ -28,7 +28,7 @@ class MobilePhoneController extends AbstractController
         );
     }
 
-    #[Route('/mobilephone/detail/{id}', name: 'api_mobile_phone_detail')]
+    #[Route('/mobilephone/detail/{id}', name: 'api_mobile_phone_detail', methods:['GET'])]
     public function mobilePhoneDetail(MobilePhone $mobilePhone): JsonResponse
     {
         return $this->json(

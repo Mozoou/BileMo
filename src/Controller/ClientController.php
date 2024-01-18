@@ -19,7 +19,7 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 #[Route('/api')]
 class ClientController extends AbstractController
 {
-    #[Route('/clients', name: 'api_clients')]
+    #[Route('/clients', name: 'api_clients', methods:['GET'])]
     public function clientAll(ClientRepository $clientRepository): JsonResponse
     {
         /** @var User $user */
@@ -38,7 +38,7 @@ class ClientController extends AbstractController
         );
     }
 
-    #[Route('/client/detail/{id}', name: 'api_client_detail')]
+    #[Route('/client/detail/{id}', name: 'api_client_detail', methods:['GET'])]
     public function clientDetail(Client $client): JsonResponse
     {
         /** @var User $user */
@@ -68,7 +68,7 @@ class ClientController extends AbstractController
         );
     }
 
-    #[Route('/client/add/', name: 'api_client_add')]
+    #[Route('/client/add/', name: 'api_client_add', methods:['POST'])]
     public function addClient(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em): JsonResponse
     {
         /** @var Client $client */
@@ -101,7 +101,7 @@ class ClientController extends AbstractController
         }
     }
 
-    #[Route('/client/remove/{id}', name: 'api_client_remove')]
+    #[Route('/client/remove/{id}', name: 'api_client_remove', methods:['POST'])]
     public function removeClient(Client $client, EntityManagerInterface $em): JsonResponse
     {
         /** @var User $user */
