@@ -8,6 +8,9 @@ use App\Repository\ClientRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Attributes as OA;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -19,7 +22,20 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 #[Route('/api')]
 class ClientController extends AbstractController
 {
-    #[Route('/clients', name: 'api_clients', methods:['GET'])]
+    /**
+     * Récupère tous les clients associés à l'entreprise de l'utilisateur actuellement authentifié.
+     */
+    #[Route('/clients', name: 'api_clients', methods: ['GET'])]
+    #[OA\Response(
+        response: 200,
+        description: 'All clients list',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Client::class, groups: ['clients:index']))
+        )
+    )]
+    #[OA\Tag(name: 'clients')]
+    #[Security(name: 'Bearer')]
     public function clientAll(ClientRepository $clientRepository): JsonResponse
     {
         /** @var User $user */
@@ -27,8 +43,7 @@ class ClientController extends AbstractController
 
         return $this->json(
             [
-                'status' => 'success',
-                'clients' => $clientRepository->findBy(['company' => $user]),
+                $clientRepository->findBy(['company' => $user])
             ],
             Response::HTTP_OK,
             [],
@@ -38,7 +53,20 @@ class ClientController extends AbstractController
         );
     }
 
-    #[Route('/client/detail/{id}', name: 'api_client_detail', methods:['GET'])]
+    /**
+     * Récupère les détails d'un client spécifique associé à l'entreprise de l'utilisateur authentifié.
+     */
+    #[Route('/client/detail/{id}', name: 'api_client_detail', methods: ['GET'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Detail of client',
+        content: new OA\JsonContent(
+            type: 'array',
+            items: new OA\Items(ref: new Model(type: Client::class, groups: ['client:detail']))
+        )
+    )]
+    #[OA\Tag(name: 'clients')]
+    #[Security(name: 'Bearer')]
     public function clientDetail(Client $client): JsonResponse
     {
         /** @var User $user */
@@ -57,8 +85,7 @@ class ClientController extends AbstractController
 
         return $this->json(
             [
-                'status' => 'success',
-                'client' => $client,
+                $client
             ],
             Response::HTTP_OK,
             [],
@@ -68,11 +95,24 @@ class ClientController extends AbstractController
         );
     }
 
-    #[Route('/client/add/', name: 'api_client_add', methods:['POST'])]
+    /**
+     * Ajoute un nouveau client associé à l'entreprise de l'utilisateur authentifié.
+     */
+    #[Route('/client/add/', name: 'api_client_add', methods: ['POST'])]
+    #[OA\Response(
+        response: 200,
+        description: 'Return id of the new client in case of success',
+        content: new OA\JsonContent(
+            type: 'success',
+        )
+    )]
+    #[OA\Tag(name: 'clients')]
+    #[Security(name: 'Bearer')]
     public function addClient(Request $request, SerializerInterface $serializer, ValidatorInterface $validator, EntityManagerInterface $em): JsonResponse
     {
         /** @var Client $client */
         $client = $serializer->deserialize($request->getContent(), Client::class, 'json');
+        /** @var User $this->getUser() */
         $client->setCompany($this->getUser());
 
         $errors = $validator->validate($client);
@@ -92,7 +132,6 @@ class ClientController extends AbstractController
             $em->flush();
             return $this->json(
                 [
-                    'status' => 'success',
                     'id' => $client->getId()
                 ]
             );
@@ -101,7 +140,12 @@ class ClientController extends AbstractController
         }
     }
 
-    #[Route('/client/remove/{id}', name: 'api_client_remove', methods:['POST'])]
+    /**
+     * Supprime un client associé à l'entreprise de l'utilisateur authentifié.
+     */
+    #[Route('/client/remove/{id}', name: 'api_client_remove', methods: ['DELETE'])]
+    #[OA\Tag(name: 'clients')]
+    #[Security(name: 'Bearer')]
     public function removeClient(Client $client, EntityManagerInterface $em): JsonResponse
     {
         /** @var User $user */
@@ -131,9 +175,15 @@ class ClientController extends AbstractController
         } catch (\Throwable $th) {
             throw $th;
         }
-        
     }
 
+    /**
+     * Return an array of violation messages
+     * 
+     * @param ConstraintViolationListInterface $errors
+     *
+     * @return array<string|Stringable>
+     */
     private function getViolationMessages(ConstraintViolationListInterface $errors): array
     {
         $messages = [];

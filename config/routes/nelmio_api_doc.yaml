@@ -1,22 +1,4 @@
-nelmio_api_doc:
-    documentation:
-        info:
-            title: 'Your API Title'
-            description: 'Description of your API'
-            version: '1.0.0'
-
-    models:
-        use_jms: true
-
-    swagger:
-        versions: [3]
-
-    areas:
-        path_patterns: ['/api/*']
-        host_patterns: ['^api\.']
-        accept_type: json
-        path_type: full
-        name: 'API Documentation'
-        description: 'API documentation for your application'
-        sandbox:
-            enabled: false
+app.swagger_ui:
+    path: /api/doc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
