@@ -8,6 +8,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -29,6 +30,7 @@ class MobilePhoneController extends AbstractController
     )]
     #[OA\Tag(name: 'mobilephone')]
     #[Security(name: 'Bearer')]
+    #[Cache(public: true, maxage: 3600, mustRevalidate: true)]
     public function mobilePhoneAll(MobilePhoneRepository $mobilePhoneRepository): JsonResponse
     {
         return $this->json(
@@ -58,6 +60,7 @@ class MobilePhoneController extends AbstractController
     )]
     #[OA\Tag(name: 'mobilephone')]
     #[Security(name: 'Bearer')]
+    #[Cache(public: true, maxage: 3600, mustRevalidate: true)]
     public function mobilePhoneDetail(MobilePhone $mobilePhone): JsonResponse
     {
         return $this->json(

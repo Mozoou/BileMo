@@ -12,6 +12,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use OpenApi\Attributes as OA;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -36,6 +37,7 @@ class ClientController extends AbstractController
     )]
     #[OA\Tag(name: 'clients')]
     #[Security(name: 'Bearer')]
+    #[Cache(public: true, maxage: 3600, mustRevalidate: true)]
     public function clientAll(ClientRepository $clientRepository): JsonResponse
     {
         /** @var User $user */
@@ -67,6 +69,7 @@ class ClientController extends AbstractController
     )]
     #[OA\Tag(name: 'clients')]
     #[Security(name: 'Bearer')]
+    #[Cache(public: true, maxage: 3600, mustRevalidate: true)]
     public function clientDetail(Client $client): JsonResponse
     {
         /** @var User $user */
