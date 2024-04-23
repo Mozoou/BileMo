@@ -47,7 +47,7 @@ class MobilePhoneController extends AbstractController
     /**
      *  Récupère les détails d'un téléphone mobile spécifique.
      */
-    #[Route('/mobilephone/detail/{id}', name: 'api_mobile_phone_detail', methods:['GET'])]
+    #[Route('/mobilephone/{id}/detail', name: 'api_mobile_phone_detail', methods:['GET'])]
     #[OA\Response(
         response: 200,
         description: 'Detail of mobile phone',

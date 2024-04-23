@@ -56,7 +56,7 @@ class ClientController extends AbstractController
     /**
      * Récupère les détails d'un client spécifique associé à l'entreprise de l'utilisateur authentifié.
      */
-    #[Route('/client/detail/{id}', name: 'api_client_detail', methods: ['GET'])]
+    #[Route('/client/{id}/detail', name: 'api_client_detail', methods: ['GET'])]
     #[OA\Response(
         response: 200,
         description: 'Detail of client',
@@ -143,7 +143,7 @@ class ClientController extends AbstractController
     /**
      * Supprime un client associé à l'entreprise de l'utilisateur authentifié.
      */
-    #[Route('/client/remove/{id}', name: 'api_client_remove', methods: ['DELETE'])]
+    #[Route('/client/{id}/remove', name: 'api_client_remove', methods: ['DELETE'])]
     #[OA\Tag(name: 'clients')]
     #[Security(name: 'Bearer')]
     public function removeClient(Client $client, EntityManagerInterface $em): JsonResponse
