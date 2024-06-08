@@ -18,6 +18,7 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 #[Route('/api')]
@@ -38,14 +39,21 @@ class ClientController extends AbstractController
     #[OA\Tag(name: 'clients')]
     #[Security(name: 'Bearer')]
     #[Cache(public: true, maxage: 3600, mustRevalidate: true)]
-    public function clientAll(ClientRepository $clientRepository): JsonResponse
-    {
+    public function clientAll(
+        ClientRepository $clientRepository,
+        #[MapQueryParameter(name: 'page')] int $page = 1,
+        #[MapQueryParameter(name: 'limit')] int $limit = 1,
+    ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();
 
+        $offset = ($page - 1) * $limit;
+
+        $clients = $clientRepository->findBy(['company' => $user], [], $limit, $offset);
+
         return $this->json(
             [
-                $clientRepository->findBy(['company' => $user])
+                $clients
             ],
             Response::HTTP_OK,
             [],
@@ -146,7 +154,7 @@ class ClientController extends AbstractController
     /**
      * Supprime un client associé à l'entreprise de l'utilisateur authentifié.
      */
-    #[Route('/client/{id}/remove', name: 'api_client_remove', methods: ['DELETE'])]
+    #[Route('/client/{id}', name: 'api_client_remove', methods: ['DELETE'])]
     #[OA\Tag(name: 'clients')]
     #[Security(name: 'Bearer')]
     public function removeClient(Client $client, EntityManagerInterface $em): JsonResponse

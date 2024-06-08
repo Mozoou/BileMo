@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\Cache;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api')]
@@ -31,12 +32,19 @@ class MobilePhoneController extends AbstractController
     #[OA\Tag(name: 'mobilephone')]
     #[Security(name: 'Bearer')]
     #[Cache(public: true, maxage: 3600, mustRevalidate: true)]
-    public function mobilePhoneAll(MobilePhoneRepository $mobilePhoneRepository): JsonResponse
-    {
+    public function mobilePhoneAll(
+        MobilePhoneRepository $mobilePhoneRepository,
+        #[MapQueryParameter(name: 'page')] int $page = 1,
+        #[MapQueryParameter(name: 'limit')] int $limit = 1,
+    ): JsonResponse {
+        $offset = ($page - 1) * $limit;
+
+        $products = $mobilePhoneRepository->findBy([], [], $limit, $offset);
+
         return $this->json(
             [
                 'status' => 'success',
-                'products' => $mobilePhoneRepository->findAll(),
+                'products' => $products
             ],
             Response::HTTP_OK,
             [],
