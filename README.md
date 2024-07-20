@@ -37,6 +37,6 @@ Le partenaire exige également que l’API respecte les niveaux 1, 2 et 3 du mod
 ### Lancer le serveur (avec un terminal à la racine du projet)
     php -S localhost:(port) -t ./public
 
-Une fois le serveur en route, vous pourrez accéder à l'url suivante
+Une fois le serveur en route, vous pourrez accéder à l'url suivante (documentation)
 
 > localhost:(port)/api/doc
