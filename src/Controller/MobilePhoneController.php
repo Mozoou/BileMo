@@ -35,7 +35,7 @@ class MobilePhoneController extends AbstractController
     public function mobilePhoneAll(
         MobilePhoneRepository $mobilePhoneRepository,
         #[MapQueryParameter(name: 'page')] int $page = 1,
-        #[MapQueryParameter(name: 'limit')] int $limit = 1,
+        #[MapQueryParameter(name: 'limit')] int $limit = 10,
     ): JsonResponse {
         $offset = ($page - 1) * $limit;
 

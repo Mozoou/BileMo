@@ -42,7 +42,7 @@ class ClientController extends AbstractController
     public function clientAll(
         ClientRepository $clientRepository,
         #[MapQueryParameter(name: 'page')] int $page = 1,
-        #[MapQueryParameter(name: 'limit')] int $limit = 1,
+        #[MapQueryParameter(name: 'limit')] int $limit = 10,
     ): JsonResponse {
         /** @var User $user */
         $user = $this->getUser();
@@ -109,12 +109,28 @@ class ClientController extends AbstractController
     /**
      * Ajoute un nouveau client associé à l'entreprise de l'utilisateur authentifié.
      */
-    #[Route('/client/add/', name: 'api_client_add', methods: ['POST'])]
+    #[Route('/client', name: 'api_client_add', methods: ['POST'])]
+    #[OA\RequestBody(
+        description: 'Client data that needs to be added',
+        required: true,
+        content: new OA\JsonContent(
+            example: [
+                'email' => 'client@example.com',
+                'firstname' => 'firstname',
+                'lastname' => 'lastname',
+                'username' => 'username',
+            ]
+        )
+    )]
     #[OA\Response(
         response: 200,
         description: 'Return id of the new client in case of success',
         content: new OA\JsonContent(
-            type: 'success',
+            type: 'object',
+            example: [
+                'id' => 1,
+                'status' => 'success'
+            ]
         )
     )]
     #[OA\Tag(name: 'clients')]
@@ -144,7 +160,8 @@ class ClientController extends AbstractController
             return $this->json(
                 [
                     'id' => $client->getId()
-                ]
+                ],
+                Response::HTTP_CREATED
             );
         } catch (\Throwable $th) {
             throw $th;
@@ -181,7 +198,8 @@ class ClientController extends AbstractController
                 [
                     'status' => 'success',
                     'message' => 'Le client a bien été supprimé'
-                ]
+                ],
+                Response::HTTP_NO_CONTENT
             );
         } catch (\Throwable $th) {
             throw $th;
